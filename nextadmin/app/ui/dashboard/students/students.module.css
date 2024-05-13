@@ -28,13 +28,13 @@
   padding: 10px;
 }
 
-.product{
+.student{
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.productImage{
+.studentImage{
   border-radius: 50%;
   object-fit: cover;
 }

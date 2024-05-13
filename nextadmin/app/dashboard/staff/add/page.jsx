@@ -1,10 +1,10 @@
-import { addUser } from "@/app/lib/actions";
-import styles from "@/app/ui/dashboard/users/addUser/addUser.module.css";
+// import { addUser } from "@/app/lib/actions";
+import styles from "@/app/ui/dashboard/staff/addStaff/addStaff.module.css";
 
-const AddUserPage = () => {
+const AddStaffPage = () => {
   return (
     <div className={styles.container}>
-      <form action={addUser} className={styles.form}>
+      <form action="" className={styles.form}>
         <input type="text" placeholder="username" name="username" required />
         <input type="email" placeholder="email" name="email" required />
         <input
@@ -40,4 +40,4 @@ const AddUserPage = () => {
   );
 };
 
-export default AddUserPage;
+export default AddStaffPage;
