@@ -39,10 +39,13 @@ module.exports = (sequelize, DataTypes) => {
   email: {
     type: Sequelize.STRING,
     allowNull:false,
-    unique:true
+    unique:true,
+    validate:{
+      isEmail: true,
+    }
   },
   phone: {
-    type:Sequelize.INTEGER,
+    type:Sequelize.STRING,
     allowNull:true,
   },
   regNo:{
@@ -50,15 +53,25 @@ module.exports = (sequelize, DataTypes) => {
     allowNull: false,
     unique:true
   },
-  idNo:{
-    type:Sequelize.INTEGER,
+  kcseNo:{
+    type:Sequelize.STRING,
     allowNull:false,
     unique:true
-
+  },
+  idNo:{
+    type:Sequelize.INTEGER,
+    allowNull:true,
+    unique:true
   },
   feePayment:{
     type:Sequelize.STRING,
     allowNull:true,
+
+  },
+  examResults:{
+    type:Sequelize.STRING,
+    allowNull:true,
+
   },
   createdAt: {
     allowNull: false,

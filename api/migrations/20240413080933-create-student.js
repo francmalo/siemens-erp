@@ -32,7 +32,7 @@ module.exports = {
         unique:true
       },
       phone: {
-        type:Sequelize.INTEGER,
+        type:Sequelize.STRING,
         allowNull:true,
       },
       regNo:{
@@ -40,15 +40,26 @@ module.exports = {
         allowNull: false,
         unique:true
       },
+      kcseNo:{
+        type:Sequelize.STRING,
+        allowNull:false,
+        unique:true
+      },
       idNo:{
         type:Sequelize.INTEGER,
-        allowNull:false,
+        allowNull:true,
         unique:true
       },
       feePayment:{
         type:Sequelize.STRING,
         allowNull:true,
       },
+      examResults:{
+        type:Sequelize.STRING,
+        allowNull:true,
+
+      },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import styles from "@/app/ui/dashboard/cohorts/addCohort/addCohort.module.css";
 
 
+
 const CohortForm = () => {
   const [cohortName, setCohortName] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -12,31 +13,65 @@ const CohortForm = () => {
   const [levels, setLevels] = useState([{ levelName: '', startDate: '', endDate: '', facilitatorId: null }]);
   const [facilitators, setFacilitators] = useState([]);
 
-  useEffect(() => {
-    const fetchFacilitators = async () => {
-      try {
-        const response = await fetch('/api/facilitators');
-        const data = await response.json();
-        setFacilitators(data);
-      } catch (error) {
-        console.error('Error fetching facilitators:', error);
-      }
-    };
+useEffect(() => {
+  const fetchFacilitators = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/facilitators');
+      const data = await response.json();
+      setFacilitators(data);
+    } catch (error) {
+      console.error('Error fetching facilitators:', error);
+    }
+  };
 
-    fetchFacilitators();
-  }, []);
+  fetchFacilitators();
+}, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Create a new cohort object
-    const newCohort = { cohortName, startDate, endDate, levels };
-    // Add the new cohort to the state or display it in the UI
-    console.log(newCohort);
-    // Reset the form
-    setCohortName('');
-    setStartDate('');
-    setEndDate('');
-    setLevels([{ levelName: '', startDate: '', endDate: '', facilitatorId: null }]);
+
+    try {
+      // Send the cohort data to the server
+      const cohortResponse = await fetch('http://localhost:4000/cohorts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ cohortName, startDate, endDate }),
+      });
+
+      if (!cohortResponse.ok) {
+        throw new Error('Failed to create cohort');
+      }
+
+      const cohort = await cohortResponse.json();
+      const cohortId = cohort.id;
+
+      // Send the levels data along with the cohort ID to the server
+      const levelsPromises = levels.map(async (level) => {
+        const levelResponse = await fetch('http://localhost:4000/levels', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ...level, cohortId, facilitatorId: level.facilitatorId }),
+        });
+
+        if (!levelResponse.ok) {
+          throw new Error('Failed to create level');
+        }
+      });
+
+      await Promise.all(levelsPromises);
+
+      // Reset the form
+      setCohortName('');
+      setStartDate('');
+      setEndDate('');
+      setLevels([{ levelName: '', startDate: '', endDate: '', facilitatorId: null }]);
+    } catch (error) {
+      console.error('Error creating cohort and levels:', error);
+    }
   };
 
   const addLevel = () => {
@@ -48,6 +83,7 @@ const CohortForm = () => {
     updatedLevels[index][field] = value;
     setLevels(updatedLevels);
   };
+
 
   return (
     <div className={styles.container}>
@@ -119,16 +155,16 @@ const CohortForm = () => {
             <div className={styles.formGroup}>
               <label className={styles.label}>Facilitator</label>
               <select
-                className={styles.select}
-                value={level.facilitatorId || ''}
-                onChange={(e) => handleLevelChange(index, 'facilitatorId', e.target.value)}
-              >
-                <option value="">Select Facilitator</option>
-                {facilitators.map((facilitator) => (
-                  <option key={facilitator.id} value={facilitator.id}>
-                    {facilitator.name}
-                  </option>
-                ))}
+                  className={styles.select}
+                  value={level.facilitatorId || ''}
+                  onChange={(e) => handleLevelChange(index, 'facilitatorId', e.target.value)}
+                >
+                  <option value="">Select Facilitator</option>
+                  {facilitators.map((facilitator) => (
+                    <option key={facilitator.id} value={facilitator.id}>
+                       {facilitator.firstName} {facilitator.lastName}
+                    </option>
+                  ))}
               </select>
             </div>
           </div>

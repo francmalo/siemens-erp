@@ -9,10 +9,8 @@ import Link from "next/link";
 
 const StudentsPage = () => {
   const [students, setStudents] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
 
-
-  useEffect(() => {  
+  useEffect(() => {
     const fetchStudents = async () => {
       try {
         const response = await fetch('http://localhost:3000/students');
@@ -26,33 +24,6 @@ const StudentsPage = () => {
 
     fetchStudents();
   }, []);
-
-
-  useEffect(()=>{
-
-     if (searchQuery.trim() !== '') {
-
-  const searchStudents = async () => {
-      try {
-        const response = await fetch(`http://localhost:3000/students/search?name=${searchQuery}`);
-        // console.log(response)
-        const studentData = await response.json();
-        setStudents(studentData);
-      } catch (error) {
-        console.error('Error fetching students:', error);
-      }
-    };
-      // Only fetch students by search if searchQuery is not empty
-     
-        searchStudents();}
-     
-    }, [searchQuery]);
-
-     const onChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
-
- 
 
   const handleDeleteStudent = async (id) => {
     try {
@@ -74,7 +45,7 @@ const StudentsPage = () => {
   return (
     <div className={styles.container}>
       <div className={styles.top}>
-        <Search placeholder="Search for a student..."  />
+        <Search placeholder="Search for a student..." />
         <Link href="/dashboard/students/add">
           <button className={styles.addButton}>Add New</button>
         </Link>
